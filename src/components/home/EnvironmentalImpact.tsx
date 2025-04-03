@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BarChart, LineChart, Area } from "recharts";
+import { BarChart, LineChart, Bar, Area } from "recharts";
 
 // Sample data for the charts
 const carbonData = [
