@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import AiRecognition from "./pages/AiRecognition";
 import SchedulePickup from "./pages/SchedulePickup";
 import Education from "./pages/Education";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/upload" element={<AiRecognition />} />
           <Route path="/schedule-pickup" element={<SchedulePickup />} />
           <Route path="/education" element={<Education />} />
+          <Route path="/profile" element={<Profile />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

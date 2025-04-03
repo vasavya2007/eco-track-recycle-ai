@@ -12,7 +12,7 @@ import EnvironmentalImpact from "@/components/home/EnvironmentalImpact";
 
 const Dashboard = () => {
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-background font-poppins">
       {/* Sidebar */}
       <DashboardSidebar />
       

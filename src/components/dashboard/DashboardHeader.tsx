@@ -1,64 +1,77 @@
 
 import React from 'react';
-import { Bell, Calendar, Gift, User } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
+  Bell, 
+  Search, 
+  User,
+  Settings,
+  Calendar
+} from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 const DashboardHeader = () => {
   return (
-    <div className="bg-white flex justify-between items-center p-4 border-b sticky top-0 z-30">
-      <div>
-        <h1 className="text-xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground text-sm">Welcome back, Alex</p>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon">
-          <Gift className="h-5 w-5 text-muted-foreground" />
-        </Button>
-        <Button variant="ghost" size="icon">
-          <Calendar className="h-5 w-5 text-muted-foreground" />
-        </Button>
+    <header className="bg-white border-b py-3 px-5 sticky top-0 z-10 font-poppins">
+      <div className="flex justify-between items-center">
+        {/* Search Bar */}
+        <div className="w-1/3 hidden md:block">
+          <div className="relative">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Search..."
+              className="w-full bg-background pl-8 focus-visible:ring-eco-green"
+            />
+          </div>
+        </div>
         
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="h-5 w-5 text-muted-foreground" />
-              <span className="absolute top-1 right-1 bg-eco-green text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                3
-              </span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>New recycling tip available</DropdownMenuItem>
-            <DropdownMenuItem>Your pickup is scheduled for tomorrow</DropdownMenuItem>
-            <DropdownMenuItem>You earned 50 eco-points!</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="gap-2">
-              <div className="w-8 h-8 rounded-full bg-eco-green/20 flex items-center justify-center">
-                <User className="h-4 w-4 text-eco-green" />
-              </div>
-              <span className="hidden md:inline-block">Alex Johnson</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Help</DropdownMenuItem>
-            <DropdownMenuItem>Logout</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* Actions */}
+        <div className="flex items-center space-x-4">
+          <Button variant="outline" size="icon" className="rounded-full">
+            <Calendar className="h-[1.2rem] w-[1.2rem]" />
+          </Button>
+          
+          <Button variant="outline" size="icon" className="rounded-full">
+            <Bell className="h-[1.2rem] w-[1.2rem]" />
+          </Button>
+          
+          <Button variant="outline" size="icon" className="rounded-full">
+            <Settings className="h-[1.2rem] w-[1.2rem]" />
+          </Button>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                <div className="h-9 w-9 rounded-full bg-eco-soft flex items-center justify-center">
+                  <User className="h-5 w-5 text-eco-green" />
+                </div>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link to="/profile">Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem>Support</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Log out</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
-    </div>
+    </header>
   );
 };
 
