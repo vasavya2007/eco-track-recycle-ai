@@ -1,80 +1,86 @@
 
 import React from 'react';
-import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
-import DashboardHeader from '@/components/dashboard/DashboardHeader';
-import StatCards from '@/components/dashboard/StatCards';
-import RecyclingTimeline from '@/components/dashboard/RecyclingTimeline';
-import UpcomingPickups from '@/components/dashboard/UpcomingPickups';
-import RewardsCard from '@/components/dashboard/RewardsCard';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from '@/components/ui/button';
-import { Upload, Calendar, LineChart, BarChart3 } from 'lucide-react';
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import StatCards from "@/components/dashboard/StatCards";
+import RecyclingTimeline from "@/components/dashboard/RecyclingTimeline";
+import RewardsCard from "@/components/dashboard/RewardsCard";
+import UpcomingPickups from "@/components/dashboard/UpcomingPickups";
+import EnvironmentalImpact from "@/components/home/EnvironmentalImpact";
 
 const Dashboard = () => {
   return (
-    <div className="flex min-h-screen bg-accent/30">
+    <div className="flex min-h-screen bg-background">
+      {/* Sidebar */}
       <DashboardSidebar />
       
-      <div className="flex-1">
+      {/* Main Content */}
+      <div className="flex-1 p-0">
         <DashboardHeader />
         
-        <div className="p-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-            <div>
-              <h1 className="text-2xl font-bold">My E-Waste Dashboard</h1>
-              <p className="text-muted-foreground">Track your recycling journey and environmental impact</p>
+        <main className="container py-6">
+          <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+          
+          {/* Main Dashboard Content */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            {/* Stats Cards */}
+            <div className="md:col-span-2">
+              <StatCards />
             </div>
             
-            <div className="flex flex-wrap gap-3">
-              <Button className="bg-eco-green hover:bg-eco-green-dark">
-                <Upload className="mr-2 h-4 w-4" />
-                Upload Device Photo
-              </Button>
-              <Button variant="outline">
-                <Calendar className="mr-2 h-4 w-4" />
-                Schedule Pickup
-              </Button>
+            {/* Rewards Card */}
+            <div>
+              <RewardsCard />
             </div>
           </div>
           
-          <StatCards />
-          
-          <Tabs defaultValue="timeline" className="mt-8">
-            <TabsList>
-              <TabsTrigger value="timeline" className="flex items-center gap-2">
-                <LineChart className="h-4 w-4" />
-                Recycling Timeline
-              </TabsTrigger>
-              <TabsTrigger value="pickups" className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                Scheduled Pickups
-              </TabsTrigger>
-              <TabsTrigger value="analytics" className="flex items-center gap-2">
-                <BarChart3 className="h-4 w-4" />
-                Analytics
-              </TabsTrigger>
+          {/* Tabs Section */}
+          <Tabs defaultValue="overview" className="mb-6">
+            <TabsList className="mb-4">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="recycling">Recycling History</TabsTrigger>
+              <TabsTrigger value="impact">Environmental Impact</TabsTrigger>
+              <TabsTrigger value="rewards">Rewards</TabsTrigger>
             </TabsList>
             
-            <TabsContent value="timeline" className="mt-6">
+            {/* Overview Tab */}
+            <TabsContent value="overview" className="grid md:grid-cols-2 gap-6">
               <RecyclingTimeline />
-            </TabsContent>
-            
-            <TabsContent value="pickups" className="mt-6">
               <UpcomingPickups />
             </TabsContent>
             
-            <TabsContent value="analytics" className="mt-6">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2">
-                  <EnvironmentalImpact />
-                </div>
-                <div>
-                  <RewardsCard />
-                </div>
-              </div>
+            {/* Recycling History Tab */}
+            <TabsContent value="recycling">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Recycling History</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>Your complete recycling history will appear here.</p>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            {/* Environmental Impact Tab */}
+            <TabsContent value="impact">
+              <EnvironmentalImpact />
+            </TabsContent>
+            
+            {/* Rewards Tab */}
+            <TabsContent value="rewards">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Rewards & Points</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>Detailed information about your rewards and points will appear here.</p>
+                </CardContent>
+              </Card>
             </TabsContent>
           </Tabs>
-        </div>
+        </main>
       </div>
     </div>
   );
