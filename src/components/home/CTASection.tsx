@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Calendar, Upload } from 'lucide-react';
+import { ArrowRight, Calendar, Upload, Building, Users, Globe } from 'lucide-react';
 
 const CTASection = () => {
   return (
@@ -13,7 +13,7 @@ const CTASection = () => {
             Ready to Make a Difference?
           </h2>
           <p className="text-lg md:text-xl mb-8 text-white/90">
-            Join thousands of environmentally conscious individuals and organizations in our mission to revolutionize e-waste management.
+            Join thousands of environmentally conscious individuals, organizations, and NGOs in our mission to revolutionize e-waste management.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -31,8 +31,9 @@ const CTASection = () => {
             </Button>
           </div>
           
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl">
+              <Building className="h-8 w-8 text-white/80 mx-auto mb-3" />
               <p className="text-2xl font-bold mb-2">Businesses</p>
               <p className="mb-4 text-white/80">
                 Corporate e-waste management solutions with impact reports and compliance certificates.
@@ -43,6 +44,18 @@ const CTASection = () => {
             </div>
             
             <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl">
+              <Globe className="h-8 w-8 text-white/80 mx-auto mb-3" />
+              <p className="text-2xl font-bold mb-2">NGOs</p>
+              <p className="mb-4 text-white/80">
+                Partnership opportunities for environmental organizations working to reduce e-waste impact.
+              </p>
+              <Link to="/ngo" className="inline-flex items-center text-white hover:underline">
+                Learn More <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl">
+              <Users className="h-8 w-8 text-white/80 mx-auto mb-3" />
               <p className="text-2xl font-bold mb-2">Individuals</p>
               <p className="mb-4 text-white/80">
                 Easy and rewarding ways to dispose of your personal electronic waste responsibly.
@@ -53,11 +66,12 @@ const CTASection = () => {
             </div>
             
             <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl">
-              <p className="text-2xl font-bold mb-2">Partners</p>
+              <Users className="h-8 w-8 text-white/80 mx-auto mb-3" />
+              <p className="text-2xl font-bold mb-2">Communities</p>
               <p className="mb-4 text-white/80">
-                Join our network of recyclers, retailers, and environmental organizations.
+                Group initiatives for neighborhoods, schools, and local organizations to collaborate.
               </p>
-              <Link to="/partners" className="inline-flex items-center text-white hover:underline">
+              <Link to="/community" className="inline-flex items-center text-white hover:underline">
                 Learn More <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </div>

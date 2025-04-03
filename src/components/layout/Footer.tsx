@@ -1,13 +1,13 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Leaf, Facebook, Twitter, Instagram, Linkedin, Mail } from 'lucide-react';
+import { Leaf, Facebook, Twitter, Instagram, Linkedin, Mail, Heart, Users, Building, GraduationCap, HandHeart } from 'lucide-react';
 
 const Footer = () => {
   return (
     <footer className="bg-eco-green text-white">
       <div className="container mx-auto pt-12 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Company Info */}
           <div>
             <div className="flex items-center gap-2 mb-4">
@@ -57,24 +57,51 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Resources */}
+          {/* Community Options */}
           <div>
-            <h3 className="font-bold text-lg mb-4">Resources</h3>
+            <h3 className="font-bold text-lg mb-4">Community</h3>
+            <ul className="space-y-2">
+              <li className="flex items-center gap-2">
+                <Users size={16} />
+                <Link to="/community/neighborhood" className="hover:text-eco-soft transition-colors">Neighborhood Collection</Link>
+              </li>
+              <li className="flex items-center gap-2">
+                <GraduationCap size={16} />
+                <Link to="/community/schools" className="hover:text-eco-soft transition-colors">School Programs</Link>
+              </li>
+              <li className="flex items-center gap-2">
+                <Building size={16} />
+                <Link to="/community/office" className="hover:text-eco-soft transition-colors">Office Challenges</Link>
+              </li>
+              <li className="flex items-center gap-2">
+                <Heart size={16} />
+                <Link to="/community/ambassador" className="hover:text-eco-soft transition-colors">Become Ambassador</Link>
+              </li>
+              <li className="flex items-center gap-2">
+                <HandHeart size={16} />
+                <Link to="/community/volunteer" className="hover:text-eco-soft transition-colors">Volunteer</Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* NGO Partnerships */}
+          <div>
+            <h3 className="font-bold text-lg mb-4">NGO Partnerships</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/blog" className="hover:text-eco-soft transition-colors">Blog</Link>
+                <Link to="/ngo/partner" className="hover:text-eco-soft transition-colors">Partner with Us</Link>
               </li>
               <li>
-                <Link to="/faqs" className="hover:text-eco-soft transition-colors">FAQs</Link>
+                <Link to="/ngo/grants" className="hover:text-eco-soft transition-colors">Grant Programs</Link>
               </li>
               <li>
-                <Link to="/terms" className="hover:text-eco-soft transition-colors">Terms of Service</Link>
+                <Link to="/ngo/initiatives" className="hover:text-eco-soft transition-colors">Joint Initiatives</Link>
               </li>
               <li>
-                <Link to="/privacy" className="hover:text-eco-soft transition-colors">Privacy Policy</Link>
+                <Link to="/ngo/resources" className="hover:text-eco-soft transition-colors">NGO Resources</Link>
               </li>
               <li>
-                <Link to="/support" className="hover:text-eco-soft transition-colors">Support</Link>
+                <Link to="/ngo/success-stories" className="hover:text-eco-soft transition-colors">Success Stories</Link>
               </li>
             </ul>
           </div>
