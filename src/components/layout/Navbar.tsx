@@ -15,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import LanguageSelector from './LanguageSelector';
 
 const Navbar = () => {
   return (
@@ -49,6 +50,8 @@ const Navbar = () => {
 
         {/* User Actions */}
         <div className="flex items-center gap-2">
+          <LanguageSelector />
+          
           <Button variant="ghost" size="icon" className="hidden md:flex">
             <Search className="h-5 w-5" />
           </Button>
