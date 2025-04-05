@@ -1,523 +1,374 @@
-
 import React, { useState } from 'react';
+import { useToast } from "@/components/ui/use-toast";
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
-import { Card, CardContent } from "@/components/ui/card";
-import { 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar as CalendarIcon, Clock, MapPin, CheckCircle2, Package, Plus, Minus } from 'lucide-react';
-import { format } from "date-fns";
-import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
+import { Slider } from "@/components/ui/slider";
+import { CalendarDays, MapPin, Truck, Clock, Package, CheckCircle2, Info } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
+
+// Translations object for multilingual support
+const translations = {
+  en: {
+    title: "Schedule E-waste Pickup",
+    subtitle: "Let us collect your electronic waste for proper recycling",
+    addressDetails: "Address Details",
+    streetAddress: "Street Address",
+    city: "City",
+    state: "State/Province",
+    postalCode: "Postal Code",
+    wasteDetails: "E-waste Details",
+    wasteType: "Type of E-waste",
+    wasteAmount: "Approximate Amount",
+    wasteDescription: "Description",
+    pickupTime: "Pickup Time",
+    selectDate: "Select Date",
+    timeSlot: "Time Slot",
+    additionalInfo: "Additional Information",
+    additionalNotes: "Additional Notes",
+    schedulePickup: "Schedule Pickup",
+    items: "items",
+    successTitle: "Pickup Scheduled!",
+    successMessage: "Your pickup has been scheduled. You will receive a confirmation email shortly.",
+    small: "Small",
+    medium: "Medium",
+    large: "Large"
+  },
+  es: {
+    title: "Programar recogida de residuos electrónicos",
+    subtitle: "Permitanos recoger sus residuos electrónicos para un reciclaje adecuado",
+    addressDetails: "Detalles de la dirección",
+    streetAddress: "Dirección",
+    city: "Ciudad",
+    state: "Estado/Provincia",
+    postalCode: "Código Postal",
+    wasteDetails: "Detalles de residuos electrónicos",
+    wasteType: "Tipo de residuo electrónico",
+    wasteAmount: "Cantidad aproximada",
+    wasteDescription: "Descripción",
+    pickupTime: "Hora de recogida",
+    selectDate: "Seleccionar fecha",
+    timeSlot: "Franja horaria",
+    additionalInfo: "Información adicional",
+    additionalNotes: "Notas adicionales",
+    schedulePickup: "Programar recogida",
+    items: "artículos",
+    successTitle: "¡Recogida programada!",
+    successMessage: "Su recogida ha sido programada. Recibirá un correo electrónico de confirmación en breve.",
+    small: "Pequeño",
+    medium: "Mediano",
+    large: "Grande"
+  },
+  fr: {
+    title: "Planifier un ramassage de déchets électroniques",
+    subtitle: "Laissez-nous collecter vos déchets électroniques pour un recyclage approprié",
+    addressDetails: "Détails de l'adresse",
+    streetAddress: "Adresse",
+    city: "Ville",
+    state: "État/Province",
+    postalCode: "Code Postal",
+    wasteDetails: "Détails des déchets électroniques",
+    wasteType: "Type de déchet électronique",
+    wasteAmount: "Quantité approximative",
+    wasteDescription: "Description",
+    pickupTime: "Heure de ramassage",
+    selectDate: "Sélectionner une date",
+    timeSlot: "Créneau horaire",
+    additionalInfo: "Informations supplémentaires",
+    additionalNotes: "Notes supplémentaires",
+    schedulePickup: "Planifier le ramassage",
+    items: "articles",
+    successTitle: "Ramassage planifié!",
+    successMessage: "Votre ramassage a été planifié. Vous recevrez un e-mail de confirmation sous peu.",
+    small: "Petit",
+    medium: "Moyen",
+    large: "Grand"
+  },
+  de: {
+    title: "Elektronikschrottabholung planen",
+    subtitle: "Lassen Sie uns Ihre elektronischen Abfälle für das richtige Recycling abholen",
+    addressDetails: "Adressdetails",
+    streetAddress: "Straßenadresse",
+    city: "Stadt",
+    state: "Bundesland/Provinz",
+    postalCode: "Postleitzahl",
+    wasteDetails: "E-Abfall-Details",
+    wasteType: "Art des Elektronikschrotts",
+    wasteAmount: "Ungefähre Menge",
+    wasteDescription: "Beschreibung",
+    pickupTime: "Abholzeit",
+    selectDate: "Datum auswählen",
+    timeSlot: "Zeitfenster",
+    additionalInfo: "Zusätzliche Informationen",
+    additionalNotes: "Zusätzliche Notizen",
+    schedulePickup: "Abholung planen",
+    items: "Gegenstände",
+    successTitle: "Abholung geplant!",
+    successMessage: "Ihre Abholung wurde geplant. Sie erhalten in Kürze eine Bestätigungs-E-Mail.",
+    small: "Klein",
+    medium: "Mittel",
+    large: "Groß"
+  },
+  // Add more languages as needed - abbreviated for brevity
+  zh: {
+    title: "安排电子垃圾回收",
+    subtitle: "让我们收集您的电子废物进行适当回收",
+    addressDetails: "地址详情",
+    streetAddress: "街道地址",
+    city: "城市",
+    state: "州/省",
+    postalCode: "邮政编码",
+    wasteDetails: "电子废物详情",
+    wasteType: "电子废物类型",
+    wasteAmount: "大致数量",
+    wasteDescription: "描述",
+    pickupTime: "收集时间",
+    selectDate: "选择日期",
+    timeSlot: "时间段",
+    additionalInfo: "附加信息",
+    additionalNotes: "附加说明",
+    schedulePickup: "安排收集",
+    items: "物品",
+    successTitle: "已安排收集！",
+    successMessage: "您的收集已安排。您将很快收到确认电子邮件。",
+    small: "小",
+    medium: "中",
+    large: "大"
+  }
+};
 
 const SchedulePickup = () => {
-  const [date, setDate] = useState<Date | undefined>(undefined);
-  const [time, setTime] = useState<string | undefined>(undefined);
-  const [address, setAddress] = useState({
-    street: '',
-    city: '',
-    state: '',
-    zip: '',
-  });
-  const [items, setItems] = useState([{ name: '', category: '', quantity: 1 }]);
-  const [notes, setNotes] = useState('');
-  const [step, setStep] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  
+  const { language } = useLanguage();
   const { toast } = useToast();
-
-  const timeSlots = [
-    '9:00 AM - 11:00 AM',
-    '11:00 AM - 1:00 PM',
-    '1:00 PM - 3:00 PM',
-    '3:00 PM - 5:00 PM',
-    '5:00 PM - 7:00 PM',
-  ];
-
-  const deviceCategories = [
-    'Computer/Laptop',
-    'Smartphone/Tablet',
-    'TV/Monitor',
-    'Printer/Scanner',
-    'Kitchen Appliance',
-    'Audio Equipment',
-    'Gaming Console',
-    'Battery',
-    'Cable/Charger',
-    'Other'
-  ];
-
-  const handleAddItem = () => {
-    setItems([...items, { name: '', category: '', quantity: 1 }]);
-  };
-
-  const handleRemoveItem = (index: number) => {
-    const newItems = [...items];
-    newItems.splice(index, 1);
-    setItems(newItems);
-  };
-
-  const handleItemChange = (index: number, field: string, value: string | number) => {
-    const newItems = [...items];
-    newItems[index] = { ...newItems[index], [field]: value };
-    setItems(newItems);
-  };
-
-  const handleAddressChange = (field: string, value: string) => {
-    setAddress({ ...address, [field]: value });
-  };
-
+  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [wasteAmount, setWasteAmount] = useState([2]);
+  const [step, setStep] = useState(1);
+  
+  // Get translations based on current language or fall back to English
+  const t = translations[language.code as keyof typeof translations] || translations.en;
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSuccess(true);
-      toast({
-        title: "Pickup scheduled successfully!",
-        description: `Your e-waste pickup has been scheduled for ${date && format(date, 'PPP')}, ${time}.`,
-      });
-    }, 1500);
+    // Display success message
+    toast({
+      title: t.successTitle,
+      description: t.successMessage,
+      duration: 5000,
+    });
+    
+    // Move to success step
+    setStep(2);
   };
-
-  const goToStep = (newStep: number) => {
-    if (newStep === 2 && (!date || !time)) {
-      toast({
-        variant: "destructive",
-        title: "Missing information",
-        description: "Please select a date and time for your pickup.",
-      });
-      return;
-    }
-    
-    if (newStep === 3 && (!address.street || !address.city || !address.state || !address.zip)) {
-      toast({
-        variant: "destructive",
-        title: "Missing information",
-        description: "Please complete your address information.",
-      });
-      return;
-    }
-    
-    if (newStep === 4 && items.some(item => !item.name || !item.category)) {
-      toast({
-        variant: "destructive",
-        title: "Missing information",
-        description: "Please provide details for all items.",
-      });
-      return;
-    }
-    
-    setStep(newStep);
-  };
-
+  
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       
-      <main className="flex-grow py-16 bg-accent/30">
-        <div className="container">
-          <div className="max-w-3xl mx-auto">
-            <h1 className="text-3xl font-bold mb-2">Schedule E-Waste Pickup</h1>
-            <p className="text-muted-foreground mb-8">
-              Let us collect your electronic waste from your doorstep for responsible recycling
-            </p>
-            
-            {!isSuccess ? (
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                {/* Progress Steps */}
-                <div className="flex justify-between mb-8 relative">
-                  <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-muted -translate-y-1/2 z-0"></div>
-                  
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="flex flex-col items-center relative z-10">
-                      <div 
-                        className={`w-10 h-10 rounded-full flex items-center justify-center font-medium ${
-                          step === i 
-                            ? 'bg-eco-green text-white'
-                            : step > i 
-                              ? 'bg-eco-green text-white'
-                              : 'bg-muted text-muted-foreground'
-                        }`}
-                      >
-                        {step > i ? <CheckCircle2 className="h-5 w-5" /> : i}
-                      </div>
-                      <p className={`text-sm mt-2 ${step === i ? 'font-medium' : 'text-muted-foreground'}`}>
-                        {i === 1 && "Schedule"}
-                        {i === 2 && "Location"}
-                        {i === 3 && "Items"}
-                        {i === 4 && "Confirm"}
-                      </p>
+      <main className="flex-grow py-12 bg-gradient-to-b from-white to-eco-soft/30">
+        <div className="container max-w-4xl">
+          {step === 1 ? (
+            <>
+              <div className="mb-8 text-center">
+                <h1 className="text-3xl font-bold mb-2">{t.title}</h1>
+                <p className="text-muted-foreground">{t.subtitle}</p>
+              </div>
+              
+              <form onSubmit={handleSubmit} className="space-y-8">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <MapPin className="h-5 w-5 text-eco-blue" />
+                      {t.addressDetails}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <label htmlFor="street" className="block text-sm mb-1 font-medium">{t.streetAddress}</label>
+                      <Input id="street" required />
                     </div>
-                  ))}
-                </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="city" className="block text-sm mb-1 font-medium">{t.city}</label>
+                        <Input id="city" required />
+                      </div>
+                      <div>
+                        <label htmlFor="state" className="block text-sm mb-1 font-medium">{t.state}</label>
+                        <Input id="state" required />
+                      </div>
+                    </div>
+                    <div>
+                      <label htmlFor="postalCode" className="block text-sm mb-1 font-medium">{t.postalCode}</label>
+                      <Input id="postalCode" required />
+                    </div>
+                  </CardContent>
+                </Card>
                 
-                <form onSubmit={handleSubmit}>
-                  {/* Step 1: Date & Time */}
-                  {step === 1 && (
-                    <div className="space-y-6">
-                      <h2 className="text-xl font-semibold mb-4">Select Pickup Date & Time</h2>
-                      
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Package className="h-5 w-5 text-eco-blue" />
+                      {t.wasteDetails}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <label htmlFor="wasteType" className="block text-sm mb-1 font-medium">{t.wasteType}</label>
+                      <Select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="computers">Computers & Laptops</SelectItem>
+                          <SelectItem value="phones">Phones & Tablets</SelectItem>
+                          <SelectItem value="peripherals">Peripherals</SelectItem>
+                          <SelectItem value="appliances">Small Appliances</SelectItem>
+                          <SelectItem value="batteries">Batteries</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm mb-3 font-medium">{t.wasteAmount}</label>
                       <div className="space-y-4">
-                        <div>
-                          <label className="block text-sm font-medium mb-2">
-                            Select Date
-                          </label>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant="outline"
-                                className="w-full justify-start text-left"
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {date ? format(date, 'PPP') : <span>Pick a date</span>}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0">
-                              <Calendar
-                                mode="single"
-                                selected={date}
-                                onSelect={setDate}
-                                initialFocus
-                                disabled={(date) => {
-                                  // Disable dates in the past
-                                  const today = new Date();
-                                  today.setHours(0, 0, 0, 0);
-                                  return date < today;
-                                }}
-                              />
-                            </PopoverContent>
-                          </Popover>
+                        <Slider 
+                          value={wasteAmount} 
+                          onValueChange={setWasteAmount} 
+                          max={10} 
+                          step={1} 
+                          className="py-4"
+                        />
+                        <div className="flex justify-between">
+                          <span className="text-sm text-muted-foreground">{t.small}</span>
+                          <span className="text-sm font-medium">{wasteAmount} {t.items}</span>
+                          <span className="text-sm text-muted-foreground">{t.large}</span>
                         </div>
-                        
-                        <div>
-                          <label className="block text-sm font-medium mb-2">
-                            Select Time Slot
-                          </label>
-                          <Select onValueChange={(value) => setTime(value)}>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label htmlFor="description" className="block text-sm mb-1 font-medium">{t.wasteDescription}</label>
+                      <Textarea 
+                        id="description" 
+                        placeholder="Please describe the items you need to recycle"
+                        rows={3}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <CalendarDays className="h-5 w-5 text-eco-blue" />
+                      {t.pickupTime}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm mb-3 font-medium">{t.selectDate}</label>
+                        <div className="border rounded-md">
+                          <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={setDate}
+                            disabled={(date) => 
+                              date < new Date() || date > new Date(new Date().setMonth(new Date().getMonth() + 1))
+                            }
+                            className="rounded-md"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label htmlFor="timeSlot" className="block text-sm mb-1 font-medium">{t.timeSlot}</label>
+                        <div className="space-y-2">
+                          <Select>
                             <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Select a time slot">
-                                <div className="flex items-center">
-                                  <Clock className="mr-2 h-4 w-4" />
-                                  {time || "Select a time slot"}
-                                </div>
-                              </SelectValue>
+                              <SelectValue placeholder="Select time slot" />
                             </SelectTrigger>
                             <SelectContent>
-                              {timeSlots.map((slot) => (
-                                <SelectItem key={slot} value={slot}>
-                                  {slot}
-                                </SelectItem>
-                              ))}
+                              <SelectItem value="morning">9:00 AM - 12:00 PM</SelectItem>
+                              <SelectItem value="afternoon">12:00 PM - 3:00 PM</SelectItem>
+                              <SelectItem value="evening">3:00 PM - 6:00 PM</SelectItem>
                             </SelectContent>
                           </Select>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Step 2: Address */}
-                  {step === 2 && (
-                    <div className="space-y-6">
-                      <h2 className="text-xl font-semibold mb-4">Pickup Location</h2>
-                      
-                      <div className="grid grid-cols-1 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium mb-2">
-                            Street Address
-                          </label>
-                          <Input 
-                            value={address.street}
-                            onChange={(e) => handleAddressChange('street', e.target.value)}
-                            placeholder="Enter your street address"
-                          />
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-sm font-medium mb-2">
-                              City
-                            </label>
-                            <Input 
-                              value={address.city}
-                              onChange={(e) => handleAddressChange('city', e.target.value)}
-                              placeholder="City"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium mb-2">
-                              State
-                            </label>
-                            <Input 
-                              value={address.state}
-                              onChange={(e) => handleAddressChange('state', e.target.value)}
-                              placeholder="State"
-                            />
+                          
+                          <div className="flex items-center gap-2 mt-4 text-sm text-muted-foreground">
+                            <Clock className="h-4 w-4" />
+                            <span>Pickups available Monday-Saturday</span>
                           </div>
                         </div>
-                        
-                        <div>
-                          <label className="block text-sm font-medium mb-2">
-                            ZIP Code
-                          </label>
-                          <Input 
-                            value={address.zip}
-                            onChange={(e) => handleAddressChange('zip', e.target.value)}
-                            placeholder="ZIP Code"
-                          />
-                        </div>
-                        
-                        <div className="flex items-start gap-2 mt-2">
-                          <MapPin className="h-5 w-5 text-eco-green mt-0.5" />
-                          <p className="text-sm text-muted-foreground">
-                            Our drivers will contact you 30 minutes before arrival at your location.
-                          </p>
-                        </div>
                       </div>
                     </div>
-                  )}
-                  
-                  {/* Step 3: Items */}
-                  {step === 3 && (
-                    <div className="space-y-6">
-                      <h2 className="text-xl font-semibold mb-4">E-Waste Items</h2>
-                      
-                      <div className="space-y-4">
-                        {items.map((item, index) => (
-                          <Card key={index}>
-                            <CardContent className="pt-6">
-                              <div className="flex justify-between items-center mb-4">
-                                <h3 className="font-medium">Item {index + 1}</h3>
-                                {items.length > 1 && (
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => handleRemoveItem(index)}
-                                  >
-                                    <Minus className="h-4 w-4 text-destructive" />
-                                  </Button>
-                                )}
-                              </div>
-                              
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                  <label className="block text-sm font-medium mb-2">
-                                    Item Name
-                                  </label>
-                                  <Input 
-                                    value={item.name}
-                                    onChange={(e) => handleItemChange(index, 'name', e.target.value)}
-                                    placeholder="e.g. Old Laptop"
-                                  />
-                                </div>
-                                
-                                <div>
-                                  <label className="block text-sm font-medium mb-2">
-                                    Category
-                                  </label>
-                                  <Select 
-                                    onValueChange={(value) => handleItemChange(index, 'category', value)}
-                                    value={item.category}
-                                  >
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select a category" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {deviceCategories.map((category) => (
-                                        <SelectItem key={category} value={category}>
-                                          {category}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                                
-                                <div>
-                                  <label className="block text-sm font-medium mb-2">
-                                    Quantity
-                                  </label>
-                                  <Input 
-                                    type="number"
-                                    min="1"
-                                    value={item.quantity}
-                                    onChange={(e) => handleItemChange(index, 'quantity', parseInt(e.target.value))}
-                                  />
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                        
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={handleAddItem}
-                          className="w-full"
-                        >
-                          <Plus className="mr-2 h-4 w-4" />
-                          Add Another Item
-                        </Button>
-                        
-                        <div>
-                          <label className="block text-sm font-medium mb-2">
-                            Special Instructions (Optional)
-                          </label>
-                          <Textarea 
-                            value={notes}
-                            onChange={(e) => setNotes(e.target.value)}
-                            placeholder="Any special instructions for our pickup team..."
-                            rows={3}
-                          />
-                        </div>
-                      </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Info className="h-5 w-5 text-eco-blue" />
+                      {t.additionalInfo}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div>
+                      <label htmlFor="notes" className="block text-sm mb-1 font-medium">{t.additionalNotes}</label>
+                      <Textarea 
+                        id="notes" 
+                        placeholder="Any special instructions for pickup"
+                        rows={3}
+                      />
                     </div>
-                  )}
-                  
-                  {/* Step 4: Confirm */}
-                  {step === 4 && (
-                    <div className="space-y-6">
-                      <h2 className="text-xl font-semibold mb-4">Confirm Your Pickup</h2>
-                      
-                      <Card>
-                        <CardContent className="pt-6">
-                          <div className="space-y-4">
-                            <div className="flex items-start gap-3">
-                              <CalendarIcon className="h-5 w-5 text-eco-green" />
-                              <div>
-                                <p className="font-medium">Pickup Date & Time</p>
-                                <p className="text-muted-foreground">
-                                  {date && format(date, 'PPP')} • {time}
-                                </p>
-                              </div>
-                            </div>
-                            
-                            <div className="flex items-start gap-3">
-                              <MapPin className="h-5 w-5 text-eco-green" />
-                              <div>
-                                <p className="font-medium">Pickup Location</p>
-                                <p className="text-muted-foreground">
-                                  {address.street}, {address.city}, {address.state} {address.zip}
-                                </p>
-                              </div>
-                            </div>
-                            
-                            <div className="flex items-start gap-3">
-                              <Package className="h-5 w-5 text-eco-green" />
-                              <div>
-                                <p className="font-medium">Items for Recycling</p>
-                                <ul className="text-muted-foreground">
-                                  {items.map((item, index) => (
-                                    <li key={index}>
-                                      {item.quantity}x {item.name} ({item.category})
-                                    </li>
-                                  ))}
-                                </ul>
-                                {notes && (
-                                  <div className="mt-2">
-                                    <p className="font-medium">Special Instructions</p>
-                                    <p className="text-muted-foreground">{notes}</p>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                      
-                      <div className="border-t pt-4">
-                        <p className="text-sm text-muted-foreground mb-4">
-                          By confirming this pickup, you agree to our Terms of Service and Privacy Policy. 
-                          Our team will handle your e-waste responsibly and in accordance with environmental regulations.
-                        </p>
-                        
-                        <Button 
-                          type="submit" 
-                          className="w-full bg-eco-green hover:bg-eco-green-dark"
-                          disabled={isSubmitting}
-                        >
-                          {isSubmitting ? "Scheduling..." : "Confirm Pickup"}
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Navigation Buttons */}
-                  {step < 4 && (
-                    <div className="mt-8 flex justify-between">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => goToStep(step - 1)}
-                        disabled={step === 1}
-                      >
-                        Back
-                      </Button>
-                      <Button
-                        type="button"
-                        onClick={() => goToStep(step + 1)}
-                      >
-                        Continue
-                      </Button>
-                    </div>
-                  )}
-                </form>
-              </div>
-            ) : (
-              <div className="bg-white rounded-xl shadow-sm p-8 text-center">
-                <div className="w-20 h-20 rounded-full bg-eco-green/20 flex items-center justify-center mx-auto mb-6">
-                  <CheckCircle2 className="h-10 w-10 text-eco-green" />
+                  </CardContent>
+                  <CardFooter className="flex justify-end">
+                    <Button type="submit" className="bg-eco-green hover:bg-eco-green-dark">
+                      <Truck className="mr-2 h-4 w-4" />
+                      {t.schedulePickup}
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </form>
+            </>
+          ) : (
+            <Card className="border-eco-green border-2">
+              <CardContent className="pt-6 text-center flex flex-col items-center justify-center p-12 space-y-4">
+                <div className="bg-eco-green bg-opacity-20 p-4 rounded-full">
+                  <CheckCircle2 className="h-16 w-16 text-eco-green" />
                 </div>
-                
-                <h2 className="text-2xl font-bold mb-2">Pickup Scheduled!</h2>
-                <p className="text-muted-foreground mb-6">
-                  Your e-waste pickup has been successfully scheduled for {date && format(date, 'PPP')}, {time}.
+                <h2 className="text-2xl font-bold">{t.successTitle}</h2>
+                <p className="text-muted-foreground max-w-md mx-auto">
+                  {t.successMessage}
                 </p>
-                
-                <div className="bg-eco-soft p-4 rounded-lg mb-6">
-                  <div className="flex items-start gap-3">
-                    <MapPin className="h-5 w-5 text-eco-green mt-1" />
-                    <div className="text-left">
-                      <p className="font-medium">Pickup Location</p>
-                      <p className="text-muted-foreground">
-                        {address.street}, {address.city}, {address.state} {address.zip}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
-                <p className="text-sm text-muted-foreground mb-6">
-                  A confirmation email has been sent to your registered email address. 
-                  You can view and manage your pickups in your dashboard.
-                </p>
-                
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button variant="outline" asChild>
-                    <a href="/dashboard">View in Dashboard</a>
-                  </Button>
-                  <Button className="bg-eco-green hover:bg-eco-green-dark" asChild>
-                    <a href="/">Return to Home</a>
+                <div className="pt-4">
+                  <Button onClick={() => window.location.href = '/dashboard'}>
+                    Go to Dashboard
                   </Button>
                 </div>
-              </div>
-            )}
-          </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </main>
       
