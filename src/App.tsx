@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
+import DashboardSchedule from "./pages/DashboardSchedule";
 import AiRecognition from "./pages/AiRecognition";
 import SchedulePickup from "./pages/SchedulePickup";
 import Education from "./pages/Education";
@@ -25,6 +26,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/schedule" element={<DashboardSchedule />} />
             <Route path="/upload" element={<AiRecognition />} />
             <Route path="/schedule-pickup" element={<SchedulePickup />} />
             <Route path="/education" element={<Education />} />
