@@ -9,8 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, ShoppingCart, Heart, Star } from 'lucide-react';
+import { Search, Filter, ShoppingCart, Heart, Star, Grid3X3, List, ArrowUpDown } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { Image } from "@/components/ui/image";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 // Sample marketplace items
 const marketplaceItems = [
@@ -24,7 +28,12 @@ const marketplaceItems = [
     category: 'computers',
     rating: 4.7,
     reviews: 28,
-    condition: 'Refurbished'
+    condition: 'Refurbished',
+    seller: {
+      name: 'Tech Renewal',
+      rating: 4.8,
+      sales: 142
+    }
   },
   {
     id: 2,
@@ -36,7 +45,12 @@ const marketplaceItems = [
     category: 'accessories',
     rating: 4.5,
     reviews: 42,
-    condition: 'New'
+    condition: 'New',
+    seller: {
+      name: 'Ocean Plastics Co',
+      rating: 4.9,
+      sales: 278
+    }
   },
   {
     id: 3,
@@ -48,7 +62,12 @@ const marketplaceItems = [
     category: 'tablets',
     rating: 4.3,
     reviews: 15,
-    condition: 'Refurbished'
+    condition: 'Refurbished',
+    seller: {
+      name: 'GreenTech Refurb',
+      rating: 4.6,
+      sales: 95
+    }
   },
   {
     id: 4,
@@ -60,7 +79,12 @@ const marketplaceItems = [
     category: 'accessories',
     rating: 4.8,
     reviews: 67,
-    condition: 'New'
+    condition: 'New',
+    seller: {
+      name: 'SolarPower Solutions',
+      rating: 4.7,
+      sales: 203
+    }
   },
   {
     id: 5,
@@ -72,7 +96,12 @@ const marketplaceItems = [
     category: 'audio',
     rating: 4.2,
     reviews: 31,
-    condition: 'Refurbished'
+    condition: 'Refurbished',
+    seller: {
+      name: 'AudioRevive',
+      rating: 4.4,
+      sales: 57
+    }
   },
   {
     id: 6,
@@ -84,8 +113,33 @@ const marketplaceItems = [
     category: 'wearables',
     rating: 4.6,
     reviews: 23,
-    condition: 'Refurbished'
+    condition: 'Refurbished',
+    seller: {
+      name: 'SmartGear Renew',
+      rating: 4.5,
+      sales: 89
+    }
   },
+];
+
+// Sample marketplace orders
+const orderItems = [
+  {
+    id: "ORD-001",
+    date: "2025-03-28",
+    product: "Refurbished Laptop",
+    price: 499,
+    status: "Delivered",
+    seller: "Tech Renewal"
+  },
+  {
+    id: "ORD-002",
+    date: "2025-04-01",
+    product: "Recycled Phone Case",
+    price: 29,
+    status: "Processing",
+    seller: "Ocean Plastics Co"
+  }
 ];
 
 const DashboardMarketplace = () => {
@@ -93,6 +147,8 @@ const DashboardMarketplace = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [category, setCategory] = useState('all');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [sortOrder, setSortOrder] = useState('newest');
 
   const translations = {
     en: {
@@ -125,7 +181,23 @@ const DashboardMarketplace = () => {
       reviews: "reviews",
       addToCart: "Add to Cart",
       addToWishlist: "Add to Wishlist",
-      sellItemsMessage: "Have electronics you no longer need? List them on our marketplace!"
+      sellItemsMessage: "Have electronics you no longer need? List them on our marketplace!",
+      viewAs: "View as",
+      grid: "Grid",
+      list: "List",
+      seller: "Seller",
+      price: "Price",
+      product: "Product",
+      status: "Status",
+      date: "Date",
+      orderID: "Order ID",
+      noOrders: "You don't have any orders yet.",
+      browseProducts: "Browse Products",
+      itemName: "Item Name",
+      description: "Description",
+      uploadImages: "Upload Images",
+      dragDrop: "Drag and drop images here or click to browse",
+      listForSale: "List Item for Sale"
     },
     es: {
       title: "Mercado",
@@ -157,7 +229,23 @@ const DashboardMarketplace = () => {
       reviews: "reseñas",
       addToCart: "Añadir al Carrito",
       addToWishlist: "Añadir a Favoritos",
-      sellItemsMessage: "¿Tienes electrónicos que ya no necesitas? ¡Véndelos en nuestro mercado!"
+      sellItemsMessage: "¿Tienes electrónicos que ya no necesitas? ¡Véndelos en nuestro mercado!",
+      viewAs: "Ver como",
+      grid: "Cuadrícula",
+      list: "Lista",
+      seller: "Vendedor",
+      price: "Precio",
+      product: "Producto",
+      status: "Estado",
+      date: "Fecha",
+      orderID: "ID de Pedido",
+      noOrders: "No tienes ningún pedido todavía.",
+      browseProducts: "Explorar Productos",
+      itemName: "Nombre del Artículo",
+      description: "Descripción",
+      uploadImages: "Subir Imágenes",
+      dragDrop: "Arrastra y suelta imágenes aquí o haz clic para explorar",
+      listForSale: "Poner en Venta"
     }
   };
   
@@ -175,6 +263,20 @@ const DashboardMarketplace = () => {
     return matchesSearch && matchesCategory;
   });
 
+  // Sort items based on selected sort order
+  const sortedItems = [...filteredItems].sort((a, b) => {
+    switch (sortOrder) {
+      case 'priceAsc':
+        return a.price - b.price;
+      case 'priceDesc':
+        return b.price - a.price;
+      case 'popular':
+        return b.rating - a.rating;
+      default: // newest
+        return b.id - a.id;
+    }
+  });
+
   const handleAddToCart = (item: any) => {
     toast({
       title: "Added to Cart",
@@ -187,6 +289,10 @@ const DashboardMarketplace = () => {
       title: "Added to Wishlist",
       description: `${item.title} has been added to your wishlist.`,
     });
+  };
+
+  const toggleViewMode = () => {
+    setViewMode(viewMode === 'grid' ? 'list' : 'grid');
   };
 
   return (
@@ -233,79 +339,206 @@ const DashboardMarketplace = () => {
                       
                       <div>
                         <h3 className="text-sm font-medium mb-2">{t.sort}</h3>
-                        <Select defaultValue="newest">
+                        <Select defaultValue="newest" onValueChange={(value) => setSortOrder(value)}>
                           <SelectTrigger>
                             <SelectValue placeholder={t.sortOptions.newest} />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="newest">{t.sortOptions.newest}</SelectItem>
-                            <SelectItem value="price-asc">{t.sortOptions.priceAsc}</SelectItem>
-                            <SelectItem value="price-desc">{t.sortOptions.priceDesc}</SelectItem>
+                            <SelectItem value="priceAsc">{t.sortOptions.priceAsc}</SelectItem>
+                            <SelectItem value="priceDesc">{t.sortOptions.priceDesc}</SelectItem>
                             <SelectItem value="popular">{t.sortOptions.popular}</SelectItem>
                           </SelectContent>
                         </Select>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-sm font-medium mb-2">{t.condition}</h3>
+                        <div className="space-y-2">
+                          <div className="flex items-center">
+                            <input type="checkbox" id="new" className="mr-2" />
+                            <Label htmlFor="new">New</Label>
+                          </div>
+                          <div className="flex items-center">
+                            <input type="checkbox" id="refurbished" className="mr-2" />
+                            <Label htmlFor="refurbished">Refurbished</Label>
+                          </div>
+                          <div className="flex items-center">
+                            <input type="checkbox" id="used" className="mr-2" />
+                            <Label htmlFor="used">Used</Label>
+                          </div>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
                   
                   <div className="space-y-6">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-                      <Input
-                        placeholder={t.search}
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10"
-                      />
+                    <div className="flex justify-between items-center">
+                      <div className="relative w-full max-w-md">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                          placeholder={t.search}
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted-foreground hidden md:inline">{t.viewAs}:</span>
+                        <Button
+                          variant={viewMode === 'grid' ? 'secondary' : 'outline'}
+                          size="sm"
+                          className="px-2"
+                          onClick={() => setViewMode('grid')}
+                        >
+                          <Grid3X3 className="h-4 w-4" />
+                          <span className="sr-only md:not-sr-only md:ml-2">{t.grid}</span>
+                        </Button>
+                        <Button
+                          variant={viewMode === 'list' ? 'secondary' : 'outline'}
+                          size="sm"
+                          className="px-2"
+                          onClick={() => setViewMode('list')}
+                        >
+                          <List className="h-4 w-4" />
+                          <span className="sr-only md:not-sr-only md:ml-2">{t.list}</span>
+                        </Button>
+                      </div>
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {filteredItems.map((item) => (
-                        <Card key={item.id} className="overflow-hidden">
-                          <div className="aspect-video relative overflow-hidden">
-                            <img 
-                              src={item.image} 
-                              alt={item.title}
-                              className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                            />
-                            <Badge className="absolute top-2 right-2 bg-eco-green text-white">
-                              {item.condition}
-                            </Badge>
-                          </div>
-                          <CardHeader className="pb-2">
-                            <CardTitle className="text-lg">{item.title}</CardTitle>
-                            <div className="flex items-center text-amber-500">
-                              {[...Array(5)].map((_, i) => (
-                                <Star key={i} fill={i < Math.floor(item.rating) ? "currentColor" : "none"} size={14} />
-                              ))}
-                              <span className="ml-1 text-xs text-muted-foreground">
-                                {item.rating} ({item.reviews} {t.reviews})
-                              </span>
+                    {viewMode === 'grid' ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {sortedItems.map((item) => (
+                          <Card key={item.id} className="overflow-hidden">
+                            <div className="aspect-video relative overflow-hidden">
+                              <Image 
+                                src={item.image} 
+                                alt={item.title}
+                                aspectRatio="video"
+                                className="transition-transform duration-300 hover:scale-105"
+                              />
+                              <Badge className="absolute top-2 right-2 bg-eco-green text-white">
+                                {item.condition}
+                              </Badge>
                             </div>
-                          </CardHeader>
-                          <CardContent>
-                            <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{item.description}</p>
-                            <p className="font-bold text-lg">${item.price}</p>
-                          </CardContent>
-                          <CardFooter className="flex gap-2">
-                            <Button 
-                              variant="default" 
-                              className="flex-1 bg-eco-green hover:bg-eco-green-dark"
-                              onClick={() => handleAddToCart(item)}
-                            >
-                              <ShoppingCart size={16} className="mr-1" />
-                              {t.addToCart}
-                            </Button>
-                            <Button 
-                              variant="ghost" 
-                              onClick={() => handleAddToWishlist(item)}
-                            >
-                              <Heart size={16} />
-                            </Button>
-                          </CardFooter>
-                        </Card>
-                      ))}
-                    </div>
+                            <CardHeader className="pb-2">
+                              <CardTitle className="text-lg">{item.title}</CardTitle>
+                              <div className="flex items-center text-amber-500">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star key={i} fill={i < Math.floor(item.rating) ? "currentColor" : "none"} size={14} />
+                                ))}
+                                <span className="ml-1 text-xs text-muted-foreground">
+                                  {item.rating} ({item.reviews} {t.reviews})
+                                </span>
+                              </div>
+                            </CardHeader>
+                            <CardContent>
+                              <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{item.description}</p>
+                              <div className="flex justify-between items-center">
+                                <p className="font-bold text-lg">${item.price}</p>
+                                <span className="text-xs text-muted-foreground">{t.seller}: {item.seller.name}</span>
+                              </div>
+                            </CardContent>
+                            <CardFooter className="flex gap-2">
+                              <Button 
+                                variant="default" 
+                                className="flex-1 bg-eco-green hover:bg-eco-green-dark"
+                                onClick={() => handleAddToCart(item)}
+                              >
+                                <ShoppingCart size={16} className="mr-1" />
+                                {t.addToCart}
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                onClick={() => handleAddToWishlist(item)}
+                              >
+                                <Heart size={16} />
+                              </Button>
+                            </CardFooter>
+                          </Card>
+                        ))}
+                      </div>
+                    ) : (
+                      <Card>
+                        <CardContent className="p-0">
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Product</TableHead>
+                                <TableHead>Condition</TableHead>
+                                <TableHead>
+                                  <div className="flex items-center">
+                                    Price
+                                    <ArrowUpDown 
+                                      className="ml-2 h-3 w-3 cursor-pointer" 
+                                      onClick={() => setSortOrder(sortOrder === 'priceAsc' ? 'priceDesc' : 'priceAsc')}
+                                    />
+                                  </div>
+                                </TableHead>
+                                <TableHead>Seller</TableHead>
+                                <TableHead className="text-right">Actions</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {sortedItems.map(item => (
+                                <TableRow key={item.id}>
+                                  <TableCell>
+                                    <div className="flex items-center gap-3">
+                                      <div className="h-12 w-12 rounded-md overflow-hidden">
+                                        <Image 
+                                          src={item.image} 
+                                          alt={item.title} 
+                                          className="h-full w-full object-cover"
+                                        />
+                                      </div>
+                                      <div>
+                                        <p className="font-medium">{item.title}</p>
+                                        <div className="flex items-center text-amber-500">
+                                          {[...Array(5)].map((_, i) => (
+                                            <Star key={i} fill={i < Math.floor(item.rating) ? "currentColor" : "none"} size={10} />
+                                          ))}
+                                          <span className="ml-1 text-xs text-muted-foreground">
+                                            {item.rating}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </TableCell>
+                                  <TableCell>
+                                    <Badge variant={item.condition === 'New' ? 'default' : 'secondary'}>
+                                      {item.condition}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell className="font-medium">${item.price}</TableCell>
+                                  <TableCell>{item.seller.name}</TableCell>
+                                  <TableCell className="text-right">
+                                    <div className="flex justify-end gap-2">
+                                      <Button 
+                                        variant="default" 
+                                        size="sm"
+                                        className="bg-eco-green hover:bg-eco-green-dark"
+                                        onClick={() => handleAddToCart(item)}
+                                      >
+                                        <ShoppingCart size={14} className="mr-1" />
+                                        <span className="sr-only md:not-sr-only">Add</span>
+                                      </Button>
+                                      <Button 
+                                        variant="outline" 
+                                        size="sm"
+                                        onClick={() => handleAddToWishlist(item)}
+                                      >
+                                        <Heart size={14} />
+                                      </Button>
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </CardContent>
+                      </Card>
+                    )}
                   </div>
                 </div>
               </TabsContent>
@@ -320,13 +553,13 @@ const DashboardMarketplace = () => {
                     <form className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <label className="text-sm font-medium">Item Name</label>
-                          <Input placeholder="Enter item name" />
+                          <Label htmlFor="itemName" className="text-sm font-medium">{t.itemName}</Label>
+                          <Input id="itemName" placeholder="Enter item name" />
                         </div>
                         <div>
-                          <label className="text-sm font-medium">Category</label>
+                          <Label htmlFor="itemCategory" className="text-sm font-medium">{t.category}</Label>
                           <Select>
-                            <SelectTrigger>
+                            <SelectTrigger id="itemCategory">
                               <SelectValue placeholder="Select category" />
                             </SelectTrigger>
                             <SelectContent>
@@ -340,9 +573,9 @@ const DashboardMarketplace = () => {
                           </Select>
                         </div>
                         <div>
-                          <label className="text-sm font-medium">Condition</label>
+                          <Label htmlFor="itemCondition" className="text-sm font-medium">{t.condition}</Label>
                           <Select>
-                            <SelectTrigger>
+                            <SelectTrigger id="itemCondition">
                               <SelectValue placeholder="Select condition" />
                             </SelectTrigger>
                             <SelectContent>
@@ -355,26 +588,27 @@ const DashboardMarketplace = () => {
                           </Select>
                         </div>
                         <div>
-                          <label className="text-sm font-medium">Price ($)</label>
-                          <Input type="number" placeholder="0.00" />
+                          <Label htmlFor="itemPrice" className="text-sm font-medium">{t.price} ($)</Label>
+                          <Input id="itemPrice" type="number" placeholder="0.00" />
                         </div>
                       </div>
                       <div>
-                        <label className="text-sm font-medium">Description</label>
+                        <Label htmlFor="itemDescription" className="text-sm font-medium">{t.description}</Label>
                         <textarea 
+                          id="itemDescription"
                           className="w-full border rounded-md p-2 min-h-[100px]"
                           placeholder="Describe your item in detail..."
                         ></textarea>
                       </div>
                       <div>
-                        <label className="text-sm font-medium">Upload Images</label>
-                        <div className="border-2 border-dashed rounded-md p-6 text-center">
-                          <p className="text-muted-foreground">Drag and drop images here or click to browse</p>
+                        <Label className="text-sm font-medium">{t.uploadImages}</Label>
+                        <div className="border-2 border-dashed rounded-md p-6 text-center mt-2">
+                          <p className="text-muted-foreground">{t.dragDrop}</p>
                           <input type="file" className="hidden" multiple accept="image/*" />
                           <Button variant="outline" className="mt-2">Upload Images</Button>
                         </div>
                       </div>
-                      <Button className="bg-eco-green hover:bg-eco-green-dark">List Item for Sale</Button>
+                      <Button className="bg-eco-green hover:bg-eco-green-dark">{t.listForSale}</Button>
                     </form>
                   </CardContent>
                 </Card>
@@ -387,10 +621,44 @@ const DashboardMarketplace = () => {
                     <CardDescription>Track your purchases and sales</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-center py-10">
-                      <p className="text-muted-foreground">You don't have any orders yet.</p>
-                      <Button variant="outline" className="mt-4">Browse Products</Button>
-                    </div>
+                    {orderItems.length > 0 ? (
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>{t.orderID}</TableHead>
+                            <TableHead>{t.date}</TableHead>
+                            <TableHead>{t.product}</TableHead>
+                            <TableHead>{t.price}</TableHead>
+                            <TableHead>{t.seller}</TableHead>
+                            <TableHead>{t.status}</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {orderItems.map(order => (
+                            <TableRow key={order.id}>
+                              <TableCell className="font-medium">{order.id}</TableCell>
+                              <TableCell>{order.date}</TableCell>
+                              <TableCell>{order.product}</TableCell>
+                              <TableCell>${order.price}</TableCell>
+                              <TableCell>{order.seller}</TableCell>
+                              <TableCell>
+                                <Badge 
+                                  variant={order.status === "Delivered" ? "default" : "secondary"}
+                                  className={order.status === "Delivered" ? "bg-eco-green" : ""}
+                                >
+                                  {order.status}
+                                </Badge>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    ) : (
+                      <div className="text-center py-10">
+                        <p className="text-muted-foreground">{t.noOrders}</p>
+                        <Button variant="outline" className="mt-4">{t.browseProducts}</Button>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </TabsContent>
