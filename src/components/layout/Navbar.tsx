@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { 
@@ -16,8 +16,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import LanguageSelector from './LanguageSelector';
+import SearchDialog from './SearchDialog';
+import NotificationsPopover from './NotificationsPopover';
 
 const Navbar = () => {
+  const [searchOpen, setSearchOpen] = useState(false);
+  
   return (
     <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border font-poppins">
       <div className="container flex h-16 items-center justify-between">
@@ -52,12 +56,13 @@ const Navbar = () => {
         <div className="flex items-center gap-2">
           <LanguageSelector />
           
-          <Button variant="ghost" size="icon" className="hidden md:flex">
+          <Button variant="ghost" size="icon" className="hidden md:flex" onClick={() => setSearchOpen(true)}>
             <Search className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon" className="hidden md:flex">
-            <Bell className="h-5 w-5" />
-          </Button>
+          
+          <div className="hidden md:flex">
+            <NotificationsPopover count={2} />
+          </div>
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -114,6 +119,9 @@ const Navbar = () => {
           </DropdownMenu>
         </div>
       </div>
+      
+      {/* Search Dialog */}
+      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
     </header>
   );
 };
