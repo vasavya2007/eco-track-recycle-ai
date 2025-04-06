@@ -7,7 +7,8 @@ import {
   Menu, 
   User, 
   Search,
-  Bell
+  Bell,
+  ShoppingBag
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -45,7 +46,10 @@ const Navbar = () => {
             Education
           </Link>
           <Link to="/marketplace" className="text-foreground hover:text-eco-green-dark transition-colors">
-            Marketplace
+            <div className="flex items-center gap-1">
+              <ShoppingBag className="h-4 w-4" />
+              Marketplace
+            </div>
           </Link>
           <Link to="/about" className="text-foreground hover:text-eco-green-dark transition-colors">
             About

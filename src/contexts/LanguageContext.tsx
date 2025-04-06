@@ -1,7 +1,7 @@
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-type Language = {
+export type Language = {
   code: string;
   name: string;
   flag: string;
@@ -24,6 +24,7 @@ export const languages: Language[] = [
 type LanguageContextType = {
   language: Language;
   setLanguage: (language: Language) => void;
+  languages: Language[];
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -32,7 +33,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<Language>(languages[0]);
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage }}>
+    <LanguageContext.Provider value={{ language, setLanguage, languages }}>
       {children}
     </LanguageContext.Provider>
   );

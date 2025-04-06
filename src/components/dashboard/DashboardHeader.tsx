@@ -8,7 +8,8 @@ import {
   Search, 
   User,
   Settings,
-  Calendar
+  Calendar,
+  ShoppingBag
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -41,12 +42,20 @@ const DashboardHeader = () => {
             <Calendar className="h-[1.2rem] w-[1.2rem]" />
           </Button>
           
+          <Button variant="outline" size="icon" className="rounded-full" asChild>
+            <Link to="/dashboard/marketplace">
+              <ShoppingBag className="h-[1.2rem] w-[1.2rem]" />
+            </Link>
+          </Button>
+          
           <Button variant="outline" size="icon" className="rounded-full">
             <Bell className="h-[1.2rem] w-[1.2rem]" />
           </Button>
           
-          <Button variant="outline" size="icon" className="rounded-full">
-            <Settings className="h-[1.2rem] w-[1.2rem]" />
+          <Button variant="outline" size="icon" className="rounded-full" asChild>
+            <Link to="/dashboard/settings">
+              <Settings className="h-[1.2rem] w-[1.2rem]" />
+            </Link>
           </Button>
           
           <DropdownMenu>
@@ -63,8 +72,12 @@ const DashboardHeader = () => {
               <DropdownMenuItem asChild>
                 <Link to="/profile">Profile</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/dashboard/settings">Settings</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/dashboard/support">Support</Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Log out</DropdownMenuItem>
             </DropdownMenuContent>
