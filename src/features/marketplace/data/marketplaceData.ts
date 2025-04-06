@@ -15,6 +15,7 @@ export const marketplaceItems: MarketplaceItem[] = [
     reviews: 28,
     condition: 'Refurbished',
     seller: {
+      id: 'seller-001',
       name: 'Tech Renewal',
       rating: 4.8,
       sales: 142
@@ -32,6 +33,7 @@ export const marketplaceItems: MarketplaceItem[] = [
     reviews: 42,
     condition: 'New',
     seller: {
+      id: 'seller-002',
       name: 'Ocean Plastics Co',
       rating: 4.9,
       sales: 278
@@ -49,6 +51,7 @@ export const marketplaceItems: MarketplaceItem[] = [
     reviews: 15,
     condition: 'Refurbished',
     seller: {
+      id: 'seller-003',
       name: 'GreenTech Refurb',
       rating: 4.6,
       sales: 95
@@ -66,6 +69,7 @@ export const marketplaceItems: MarketplaceItem[] = [
     reviews: 67,
     condition: 'New',
     seller: {
+      id: 'seller-004',
       name: 'SolarPower Solutions',
       rating: 4.7,
       sales: 203
@@ -83,6 +87,7 @@ export const marketplaceItems: MarketplaceItem[] = [
     reviews: 31,
     condition: 'Refurbished',
     seller: {
+      id: 'seller-005',
       name: 'AudioRevive',
       rating: 4.4,
       sales: 57
@@ -100,6 +105,7 @@ export const marketplaceItems: MarketplaceItem[] = [
     reviews: 23,
     condition: 'Refurbished',
     seller: {
+      id: 'seller-006',
       name: 'SmartGear Renew',
       rating: 4.5,
       sales: 89

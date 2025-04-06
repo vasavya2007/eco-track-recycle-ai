@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { FileText, HelpCircle, MessageSquare, Phone, Search, User } from 'lucide-react';
+import { FileText, HelpCircle, MessageSquare, Phone, Search, User, Mail } from 'lucide-react';
 
 const DashboardSupport = () => {
   const { language } = useLanguage();

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Layout } from "@/components/layout/Layout";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
@@ -69,7 +68,6 @@ const DashboardRewards = () => {
     }
   };
   
-  // Default to English if the language is not supported
   const t = translations[language.code as keyof typeof translations] || translations.en;
 
   const rewards = [
@@ -165,7 +163,6 @@ const DashboardRewards = () => {
   const handleRedeem = (id: number) => {
     setRedeemingId(id);
     
-    // Simulate API call
     setTimeout(() => {
       setRedeemingId(null);
       toast({
@@ -201,7 +198,7 @@ const DashboardRewards = () => {
                     <span>{t.level} 5</span>
                     <span>{t.level} 6</span>
                   </div>
-                  <Progress value={70} className="h-2 bg-white/30" indicatorClassName="bg-white" />
+                  <Progress value={70} className="h-2 bg-white/30" />
                 </div>
                 <p className="text-sm text-white/80 text-right">650 {t.pointsNeeded}</p>
               </CardContent>
