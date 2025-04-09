@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -308,11 +307,11 @@ if __name__ == "__main__":
     # Run simulation with optimal allocation
     results = sim.simulate_recovery(ewaste_amount, optimal_allocation)
     
-    print(f"\nTotal e-waste: {ewaste_amount} kg")
-    print(f"Recovery rate: {results['recovery_rate']*100:.1f}%")
-    print(f"Total value recovered: ${results['total_value']:.2f}")
-    print(f"Total processing cost: ${results['total_cost']:.2f}")
-    print(f"Net profit: ${results['profit']:.2f}")
+    print("\\nTotal e-waste: {} kg".format(ewaste_amount))
+    print("Recovery rate: {:.1f}%".format(results['recovery_rate']*100))
+    print("Total value recovered: ${:.2f}".format(results['total_value']))
+    print("Total processing cost: ${:.2f}".format(results['total_cost']))
+    print("Net profit: ${:.2f}".format(results['profit']))
     
     # Plot results
     sim.plot_results(results)
