@@ -6,7 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Video, FileText, Download, ExternalLink, ChevronDown, ChevronUp, Image, Table } from 'lucide-react';
+import { BookOpen, Video, FileText, Download, ExternalLink, ChevronDown, ChevronUp, Image, Table, Code } from 'lucide-react';
+import PythonCodeExamples from '@/features/education/components/PythonCodeExamples';
 
 // Translations for the Education page
 const translations = {
@@ -181,6 +182,26 @@ const Education = () => {
   const t = translations[language.code as keyof typeof translations] || translations.en;
   
   const visibleArticles = showAllArticles ? articlesContent : articlesContent.slice(0, 3);
+
+  // Python code translations
+  const pythonTranslations = {
+    title: language.code === 'es' ? 'Ejemplos de Código Python' : 
+           language.code === 'fr' ? 'Exemples de Code Python' : 
+           language.code === 'zh' ? 'Python 代码示例' : 
+           'Python Code Examples',
+    description: language.code === 'es' ? 'Explore cómo Python puede usarse para el análisis y gestión de residuos electrónicos' : 
+                language.code === 'fr' ? 'Explorez comment Python peut être utilisé pour l\'analyse et la gestion des déchets électroniques' : 
+                language.code === 'zh' ? '探索如何使用 Python 进行电子垃圾分析和管理' : 
+                'Explore how Python can be used for e-waste analysis and management',
+    copyCode: language.code === 'es' ? 'Copiar Código' : 
+              language.code === 'fr' ? 'Copier le Code' : 
+              language.code === 'zh' ? '复制代码' : 
+              'Copy Code',
+    copied: language.code === 'es' ? 'Copiado' : 
+            language.code === 'fr' ? 'Copié' : 
+            language.code === 'zh' ? '已复制' : 
+            'Copied'
+  };
   
   return (
     <div className="min-h-screen flex flex-col">
@@ -194,7 +215,7 @@ const Education = () => {
           </div>
           
           <Tabs defaultValue="guides" className="w-full">
-            <TabsList className="grid grid-cols-4 mb-8">
+            <TabsList className="grid grid-cols-5 mb-8">
               <TabsTrigger value="guides" className="flex items-center gap-2">
                 <BookOpen className="h-4 w-4" />
                 {t.guides}
@@ -210,6 +231,10 @@ const Education = () => {
               <TabsTrigger value="articles" className="flex items-center gap-2">
                 <FileText className="h-4 w-4" />
                 {t.articles}
+              </TabsTrigger>
+              <TabsTrigger value="python" className="flex items-center gap-2">
+                <Code className="h-4 w-4" />
+                Python
               </TabsTrigger>
             </TabsList>
             
@@ -359,6 +384,10 @@ const Education = () => {
                   )}
                 </CardContent>
               </Card>
+            </TabsContent>
+            
+            <TabsContent value="python" className="space-y-6">
+              <PythonCodeExamples translations={pythonTranslations} />
             </TabsContent>
           </Tabs>
         </div>

@@ -19,6 +19,7 @@ import Education from "./pages/Education";
 import Services from "./pages/Services";
 import About from "./pages/About";
 import Profile from "./pages/Profile";
+import PythonTools from "./pages/PythonTools";
 import NotFound from "./pages/NotFound";
 import { LanguageProvider } from "./contexts/LanguageContext";
 
@@ -47,6 +48,7 @@ const App = () => (
             <Route path="/services" element={<Services />} />
             <Route path="/about" element={<About />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/python-tools" element={<PythonTools />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

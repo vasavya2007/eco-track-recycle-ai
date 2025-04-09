@@ -2,7 +2,8 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Mail, Phone } from 'lucide-react';
+import { MessageSquare, Mail, Phone, Code } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface SupportOptionsProps {
   translations: {
@@ -16,13 +17,16 @@ interface SupportOptionsProps {
       chatNow: string;
       sendEmail: string;
       call: string;
+      python?: string;
+      pythonDesc?: string;
+      exploreTools?: string;
     };
   };
 }
 
 const SupportOptions: React.FC<SupportOptionsProps> = ({ translations: t }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
       <Card className="bg-eco-green text-white">
         <CardHeader className="pb-2">
           <MessageSquare className="h-6 w-6 mb-2" />
@@ -64,6 +68,23 @@ const SupportOptions: React.FC<SupportOptionsProps> = ({ translations: t }) => {
         <CardFooter>
           <Button variant="outline" className="bg-white text-amber-600 hover:bg-white/90 w-full">
             {t.supportOptions.call}
+          </Button>
+        </CardFooter>
+      </Card>
+      
+      <Card className="bg-slate-800 text-white">
+        <CardHeader className="pb-2">
+          <Code className="h-6 w-6 mb-2" />
+          <CardTitle>{t.supportOptions.python || "Python Support"}</CardTitle>
+          <CardDescription className="text-white/80">
+            {t.supportOptions.pythonDesc || "Get help with Python integrations and tools"}
+          </CardDescription>
+        </CardHeader>
+        <CardFooter>
+          <Button asChild variant="outline" className="bg-white text-slate-800 hover:bg-white/90 w-full">
+            <Link to="/python-tools">
+              {t.supportOptions.exploreTools || "Explore Tools"}
+            </Link>
           </Button>
         </CardFooter>
       </Card>
