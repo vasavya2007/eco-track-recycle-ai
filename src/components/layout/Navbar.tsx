@@ -1,132 +1,129 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from "@/components/ui/button";
-import { 
-  Leaf, 
-  Menu, 
-  User, 
-  Search,
-  Bell,
-  ShoppingBag
-} from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import LanguageSelector from './LanguageSelector';
+import { Button } from '@/components/ui/button';
+import { Menu, X, User, LogOut } from 'lucide-react';
 import SearchDialog from './SearchDialog';
 import NotificationsPopover from './NotificationsPopover';
+import LanguageSelector from './LanguageSelector';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Navbar = () => {
-  const [searchOpen, setSearchOpen] = useState(false);
-  
+  const [isOpen, setIsOpen] = useState(false);
+  const { user, signOut } = useAuth();
+
+  const toggleMenu = () => setIsOpen(!isOpen);
+
   return (
-    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border font-poppins">
-      <div className="container flex h-16 items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
-          <div className="rounded-full bg-eco-green p-1">
-            <Leaf className="h-5 w-5 text-white" />
-          </div>
-          <span className="font-bold text-xl text-foreground">EcoTrack</span>
-        </Link>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
-          <Link to="/" className="text-foreground hover:text-eco-green-dark transition-colors">
-            Home
-          </Link>
-          <Link to="/services" className="text-foreground hover:text-eco-green-dark transition-colors">
-            Services
-          </Link>
-          <Link to="/education" className="text-foreground hover:text-eco-green-dark transition-colors">
-            Education
-          </Link>
-          <Link to="/marketplace" className="text-foreground hover:text-eco-green-dark transition-colors">
-            <div className="flex items-center gap-1">
-              <ShoppingBag className="h-4 w-4" />
-              Marketplace
-            </div>
-          </Link>
-          <Link to="/about" className="text-foreground hover:text-eco-green-dark transition-colors">
-            About
-          </Link>
-        </nav>
-
-        {/* User Actions */}
-        <div className="flex items-center gap-2">
-          <LanguageSelector />
-          
-          <Button variant="ghost" size="icon" className="hidden md:flex" onClick={() => setSearchOpen(true)}>
-            <Search className="h-5 w-5" />
-          </Button>
-          
-          <div className="hidden md:flex">
-            <NotificationsPopover count={2} />
-          </div>
-          
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="hidden md:flex">
-                <User className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem asChild>
-                <Link to="/profile">My Profile</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/dashboard">Dashboard</Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          
-          <Button asChild variant="default" className="hidden md:flex bg-eco-green hover:bg-eco-green-dark">
-            <Link to="/dashboard">
-              Dashboard
+    <nav className="bg-white border-b border-gray-200 sticky top-0 z-30">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          {/* Logo and main nav (desktop) */}
+          <div className="flex-1 flex items-center justify-between">
+            <Link to="/" className="flex-shrink-0 flex items-center">
+              <span className="text-eco-green text-xl font-bold">EcoTrack</span>
             </Link>
-          </Button>
-
-          {/* Mobile Menu */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem asChild>
-                <Link to="/">Home</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/services">Services</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/education">Education</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/marketplace">Marketplace</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/about">About</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/profile">My Profile</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/dashboard">Dashboard</Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            
+            {/* Desktop Navigation */}
+            <div className="hidden md:ml-6 md:flex md:space-x-6">
+              <Link to="/" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-eco-green">Home</Link>
+              <Link to="/upload" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-eco-green">AI Recognition</Link>
+              <Link to="/schedule-pickup" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-eco-green">Schedule Pickup</Link>
+              <Link to="/education" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-eco-green">Education</Link>
+              <Link to="/services" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-eco-green">Services</Link>
+              <Link to="/about" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-eco-green">About</Link>
+            </div>
+            
+            {/* Right side utilities */}
+            <div className="flex items-center space-x-1 md:space-x-3">
+              <SearchDialog />
+              <LanguageSelector />
+              <NotificationsPopover />
+              
+              {/* Authentication buttons */}
+              <div className="hidden md:flex items-center space-x-2">
+                {user ? (
+                  <div className="flex items-center space-x-2">
+                    <Link to="/dashboard">
+                      <Button variant="outline" size="sm" className="flex items-center">
+                        <User className="mr-1 h-4 w-4" />
+                        Dashboard
+                      </Button>
+                    </Link>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => signOut()}
+                      className="flex items-center text-red-500 hover:text-red-600 hover:bg-red-50"
+                    >
+                      <LogOut className="mr-1 h-4 w-4" />
+                      Sign Out
+                    </Button>
+                  </div>
+                ) : (
+                  <Link to="/auth">
+                    <Button className="bg-eco-green hover:bg-eco-green-dark">
+                      Sign In
+                    </Button>
+                  </Link>
+                )}
+              </div>
+              
+              {/* Mobile menu button */}
+              <div className="flex md:hidden">
+                <button
+                  onClick={toggleMenu}
+                  className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-eco-green hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-eco-green"
+                >
+                  <span className="sr-only">Open main menu</span>
+                  {isOpen ? 
+                    <X className="block h-6 w-6" aria-hidden="true" /> : 
+                    <Menu className="block h-6 w-6" aria-hidden="true" />
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      
-      {/* Search Dialog */}
-      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
-    </header>
+
+      {/* Mobile menu */}
+      {isOpen && (
+        <div className="md:hidden">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <Link to="/" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-eco-green hover:bg-gray-50">Home</Link>
+            <Link to="/upload" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-eco-green hover:bg-gray-50">AI Recognition</Link>
+            <Link to="/schedule-pickup" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-eco-green hover:bg-gray-50">Schedule Pickup</Link>
+            <Link to="/education" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-eco-green hover:bg-gray-50">Education</Link>
+            <Link to="/services" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-eco-green hover:bg-gray-50">Services</Link>
+            <Link to="/about" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-eco-green hover:bg-gray-50">About</Link>
+            
+            {/* Mobile auth buttons */}
+            {user ? (
+              <div className="space-y-2 pt-2 border-t border-gray-200">
+                <Link to="/dashboard" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-eco-green hover:bg-gray-50">
+                  Dashboard
+                </Link>
+                <button 
+                  onClick={() => signOut()}
+                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <div className="pt-4 pb-3 border-t border-gray-200">
+                <Link to="/auth">
+                  <Button className="w-full bg-eco-green hover:bg-eco-green-dark">
+                    Sign In
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </nav>
   );
 };
 
