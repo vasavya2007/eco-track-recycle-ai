@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -309,9 +310,9 @@ if __name__ == "__main__":
     
     print("\\nTotal e-waste: {} kg".format(ewaste_amount))
     print("Recovery rate: {:.1f}%".format(results['recovery_rate']*100))
-    print("Total value recovered: ${:.2f}".format(results['total_value']))
-    print("Total processing cost: ${:.2f}".format(results['total_cost']))
-    print("Net profit: ${:.2f}".format(results['profit']))
+    print("Total value recovered: \${:.2f}".format(results['total_value']))
+    print("Total processing cost: \${:.2f}".format(results['total_cost']))
+    print("Net profit: \${:.2f}".format(results['profit']))
     
     # Plot results
     sim.plot_results(results)
