@@ -1,81 +1,60 @@
 
 import React from 'react';
-import { Card, CardContent } from "@/components/ui/card";
-import { 
-  Leaf, 
-  BarChart3, 
-  Recycle, 
-  Zap
-} from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CarFront, Recycle, Leaf } from 'lucide-react';
 
-const StatCards = () => {
+interface RewardsData {
+  points?: number;
+  redeemed_points?: number;
+  level?: string;
+}
+
+interface StatCardsProps {
+  rewards: RewardsData | null;
+}
+
+const StatCards = ({ rewards }: StatCardsProps) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
       <Card>
-        <CardContent className="pt-6">
+        <CardHeader className="pb-2">
           <div className="flex items-start justify-between">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Total E-Waste Recycled</p>
-              <p className="text-2xl font-bold mt-2">42.5 kg</p>
-              <p className="text-xs text-eco-green flex items-center mt-1">
-                <span className="inline-block mr-1">↑</span> 12% since last month
-              </p>
-            </div>
-            <div className="bg-eco-soft p-3 rounded-full">
-              <Recycle className="h-6 w-6 text-eco-green" />
-            </div>
+            <CardTitle className="text-lg">Total Pickups</CardTitle>
+            <CarFront className="text-eco-blue w-6 h-6" />
           </div>
+          <CardDescription>Waste collections to date</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-3xl font-bold">8</div>
+          <p className="text-sm text-muted-foreground">+2 scheduled</p>
         </CardContent>
       </Card>
-
+      
       <Card>
-        <CardContent className="pt-6">
+        <CardHeader className="pb-2">
           <div className="flex items-start justify-between">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">CO₂ Emissions Reduced</p>
-              <p className="text-2xl font-bold mt-2">128 kg</p>
-              <p className="text-xs text-eco-green flex items-center mt-1">
-                <span className="inline-block mr-1">↑</span> 18% since last month
-              </p>
-            </div>
-            <div className="bg-eco-soft p-3 rounded-full">
-              <Leaf className="h-6 w-6 text-eco-green" />
-            </div>
+            <CardTitle className="text-lg">E-Waste Recycled</CardTitle>
+            <Recycle className="text-eco-green w-6 h-6" />
           </div>
+          <CardDescription>Total impact to date</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-3xl font-bold">45<span className="text-xl">kg</span></div>
+          <p className="text-sm text-muted-foreground">Equivalent to 156 phones</p>
         </CardContent>
       </Card>
-
+      
       <Card>
-        <CardContent className="pt-6">
+        <CardHeader className="pb-2">
           <div className="flex items-start justify-between">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Energy Saved</p>
-              <p className="text-2xl font-bold mt-2">87 kWh</p>
-              <p className="text-xs text-eco-green flex items-center mt-1">
-                <span className="inline-block mr-1">↑</span> 8% since last month
-              </p>
-            </div>
-            <div className="bg-eco-soft p-3 rounded-full">
-              <Zap className="h-6 w-6 text-eco-green" />
-            </div>
+            <CardTitle className="text-lg">Eco Points</CardTitle>
+            <Leaf className="text-amber-600 w-6 h-6" />
           </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Eco Points Earned</p>
-              <p className="text-2xl font-bold mt-2">320 pts</p>
-              <p className="text-xs text-eco-green flex items-center mt-1">
-                <span className="inline-block mr-1">↑</span> 15% since last month
-              </p>
-            </div>
-            <div className="bg-eco-soft p-3 rounded-full">
-              <BarChart3 className="h-6 w-6 text-eco-green" />
-            </div>
-          </div>
+          <CardDescription>Reward points earned</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-3xl font-bold">{rewards?.points || 0}</div>
+          <p className="text-sm text-muted-foreground">Level: {rewards?.level || 'Beginner'}</p>
         </CardContent>
       </Card>
     </div>

@@ -7,15 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Search, File, Leaf, Calendar, Settings, Recycle, Award, BarChart, HelpCircle, Book } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-interface SearchDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}
-
-const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }) => {
+// No props needed as we'll manage the dialog state internally
+const SearchDialog = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
+  const [open, setOpen] = useState(false);
 
   const translations = {
     en: {
@@ -82,93 +79,104 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }) => {
 
   const handleNavigation = (path: string) => {
     navigate(path);
-    onOpenChange(false);
+    setOpen(false);
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[550px] p-0">
-        <DialogHeader className="px-4 pt-4 pb-2">
-          <DialogTitle>{t.title}</DialogTitle>
-          <div className="relative mt-2">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input
-              placeholder={t.placeholder}
-              className="pl-10"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              autoFocus
-            />
-          </div>
-        </DialogHeader>
-        <div className="px-4 pb-4 max-h-[60vh] overflow-y-auto">
-          {(filteredPages.length > 0 || filteredArticles.length > 0 || filteredHelp.length > 0) ? (
-            <>
-              {filteredPages.length > 0 && (
-                <div className="mb-4">
-                  <h3 className="text-sm font-medium text-muted-foreground mb-2">{t.categories.pages}</h3>
-                  <div className="space-y-1">
-                    {filteredPages.map((page, index) => (
-                      <Button
-                        key={index}
-                        variant="ghost"
-                        className="w-full justify-start text-left"
-                        onClick={() => handleNavigation(page.path)}
-                      >
-                        <page.icon className="mr-2 h-4 w-4" />
-                        {page.title}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              {filteredArticles.length > 0 && (
-                <div className="mb-4">
-                  <h3 className="text-sm font-medium text-muted-foreground mb-2">{t.categories.articles}</h3>
-                  <div className="space-y-1">
-                    {filteredArticles.map((article, index) => (
-                      <Button
-                        key={index}
-                        variant="ghost"
-                        className="w-full justify-start text-left"
-                        onClick={() => handleNavigation(article.path)}
-                      >
-                        <Book className="mr-2 h-4 w-4" />
-                        {article.title}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              {filteredHelp.length > 0 && (
-                <div>
-                  <h3 className="text-sm font-medium text-muted-foreground mb-2">{t.categories.help}</h3>
-                  <div className="space-y-1">
-                    {filteredHelp.map((item, index) => (
-                      <Button
-                        key={index}
-                        variant="ghost"
-                        className="w-full justify-start text-left"
-                        onClick={() => handleNavigation(item.path)}
-                      >
-                        <File className="mr-2 h-4 w-4" />
-                        {item.title}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="py-10 text-center">
-              <p className="text-muted-foreground">No results found. Try a different search term.</p>
+    <>
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        onClick={() => setOpen(true)}
+        aria-label="Search"
+      >
+        <Search className="h-5 w-5" />
+      </Button>
+      
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-[550px] p-0">
+          <DialogHeader className="px-4 pt-4 pb-2">
+            <DialogTitle>{t.title}</DialogTitle>
+            <div className="relative mt-2">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder={t.placeholder}
+                className="pl-10"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                autoFocus
+              />
             </div>
-          )}
-        </div>
-      </DialogContent>
-    </Dialog>
+          </DialogHeader>
+          <div className="px-4 pb-4 max-h-[60vh] overflow-y-auto">
+            {(filteredPages.length > 0 || filteredArticles.length > 0 || filteredHelp.length > 0) ? (
+              <>
+                {filteredPages.length > 0 && (
+                  <div className="mb-4">
+                    <h3 className="text-sm font-medium text-muted-foreground mb-2">{t.categories.pages}</h3>
+                    <div className="space-y-1">
+                      {filteredPages.map((page, index) => (
+                        <Button
+                          key={index}
+                          variant="ghost"
+                          className="w-full justify-start text-left"
+                          onClick={() => handleNavigation(page.path)}
+                        >
+                          <page.icon className="mr-2 h-4 w-4" />
+                          {page.title}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {filteredArticles.length > 0 && (
+                  <div className="mb-4">
+                    <h3 className="text-sm font-medium text-muted-foreground mb-2">{t.categories.articles}</h3>
+                    <div className="space-y-1">
+                      {filteredArticles.map((article, index) => (
+                        <Button
+                          key={index}
+                          variant="ghost"
+                          className="w-full justify-start text-left"
+                          onClick={() => handleNavigation(article.path)}
+                        >
+                          <Book className="mr-2 h-4 w-4" />
+                          {article.title}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {filteredHelp.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-medium text-muted-foreground mb-2">{t.categories.help}</h3>
+                    <div className="space-y-1">
+                      {filteredHelp.map((item, index) => (
+                        <Button
+                          key={index}
+                          variant="ghost"
+                          className="w-full justify-start text-left"
+                          onClick={() => handleNavigation(item.path)}
+                        >
+                          <File className="mr-2 h-4 w-4" />
+                          {item.title}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="py-10 text-center">
+                <p className="text-muted-foreground">No results found. Try a different search term.</p>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

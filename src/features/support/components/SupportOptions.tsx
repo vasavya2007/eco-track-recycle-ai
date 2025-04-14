@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 
 interface SupportOptionsProps {
   translations: {
-    supportOptions: {
+    supportOptions?: {
       chat: string;
       chatDesc: string;
       email: string;
@@ -25,19 +25,35 @@ interface SupportOptionsProps {
 }
 
 const SupportOptions: React.FC<SupportOptionsProps> = ({ translations: t }) => {
+  // Default translations if not provided
+  const supportOptions = t.supportOptions || {
+    chat: "Live Chat",
+    chatDesc: "Chat with our support team in real-time",
+    email: "Email Support",
+    emailDesc: "Get help via email within 24 hours",
+    phone: "Phone Support",
+    phoneDesc: "Call us directly for urgent issues",
+    chatNow: "Chat Now",
+    sendEmail: "Send Email",
+    call: "Call Now",
+    python: "Python Support",
+    pythonDesc: "Get help with Python integrations and tools",
+    exploreTools: "Explore Tools"
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
       <Card className="bg-eco-green text-white">
         <CardHeader className="pb-2">
           <MessageSquare className="h-6 w-6 mb-2" />
-          <CardTitle>{t.supportOptions.chat}</CardTitle>
+          <CardTitle>{supportOptions.chat}</CardTitle>
           <CardDescription className="text-white/80">
-            {t.supportOptions.chatDesc}
+            {supportOptions.chatDesc}
           </CardDescription>
         </CardHeader>
         <CardFooter>
           <Button variant="outline" className="bg-white text-eco-green hover:bg-white/90 w-full">
-            {t.supportOptions.chatNow}
+            {supportOptions.chatNow}
           </Button>
         </CardFooter>
       </Card>
@@ -45,14 +61,14 @@ const SupportOptions: React.FC<SupportOptionsProps> = ({ translations: t }) => {
       <Card className="bg-eco-blue text-white">
         <CardHeader className="pb-2">
           <Mail className="h-6 w-6 mb-2" />
-          <CardTitle>{t.supportOptions.email}</CardTitle>
+          <CardTitle>{supportOptions.email}</CardTitle>
           <CardDescription className="text-white/80">
-            {t.supportOptions.emailDesc}
+            {supportOptions.emailDesc}
           </CardDescription>
         </CardHeader>
         <CardFooter>
           <Button variant="outline" className="bg-white text-eco-blue hover:bg-white/90 w-full">
-            {t.supportOptions.sendEmail}
+            {supportOptions.sendEmail}
           </Button>
         </CardFooter>
       </Card>
@@ -60,14 +76,14 @@ const SupportOptions: React.FC<SupportOptionsProps> = ({ translations: t }) => {
       <Card className="bg-amber-600 text-white">
         <CardHeader className="pb-2">
           <Phone className="h-6 w-6 mb-2" />
-          <CardTitle>{t.supportOptions.phone}</CardTitle>
+          <CardTitle>{supportOptions.phone}</CardTitle>
           <CardDescription className="text-white/80">
-            {t.supportOptions.phoneDesc}
+            {supportOptions.phoneDesc}
           </CardDescription>
         </CardHeader>
         <CardFooter>
           <Button variant="outline" className="bg-white text-amber-600 hover:bg-white/90 w-full">
-            {t.supportOptions.call}
+            {supportOptions.call}
           </Button>
         </CardFooter>
       </Card>
@@ -75,15 +91,15 @@ const SupportOptions: React.FC<SupportOptionsProps> = ({ translations: t }) => {
       <Card className="bg-slate-800 text-white">
         <CardHeader className="pb-2">
           <Code className="h-6 w-6 mb-2" />
-          <CardTitle>{t.supportOptions.python || "Python Support"}</CardTitle>
+          <CardTitle>{supportOptions.python || "Python Support"}</CardTitle>
           <CardDescription className="text-white/80">
-            {t.supportOptions.pythonDesc || "Get help with Python integrations and tools"}
+            {supportOptions.pythonDesc || "Get help with Python integrations and tools"}
           </CardDescription>
         </CardHeader>
         <CardFooter>
           <Button asChild variant="outline" className="bg-white text-slate-800 hover:bg-white/90 w-full">
             <Link to="/python-tools">
-              {t.supportOptions.exploreTools || "Explore Tools"}
+              {supportOptions.exploreTools || "Explore Tools"}
             </Link>
           </Button>
         </CardFooter>

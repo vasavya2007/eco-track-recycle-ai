@@ -1,81 +1,88 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-interface FAQ {
+interface FAQItem {
+  id: string;
   question: string;
   answer: string;
+  category: string;
 }
 
 interface FAQSectionProps {
-  faqs: Record<string, FAQ[]>;
+  faqs: FAQItem[];
   searchQuery: string;
   translations: {
     faq: string;
-    faqCategories: Record<string, string>;
+    faqCategories?: Record<string, string>;
   };
 }
 
 const FAQSection: React.FC<FAQSectionProps> = ({ faqs, searchQuery, translations: t }) => {
-  const filteredFaqs = Object.entries(faqs).reduce((acc, [category, questions]) => {
-    if (searchQuery) {
-      const filtered = questions.filter(
-        faq => 
-          faq.question.toLowerCase().includes(searchQuery.toLowerCase()) || 
-          faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      if (filtered.length > 0) {
-        acc[category] = filtered;
-      }
-    } else {
-      acc[category] = questions;
-    }
-    return acc;
-  }, {} as Record<string, FAQ[]>);
+  const [activeCategory, setActiveCategory] = useState<string>("all");
+  
+  // Default category names if translations not provided
+  const faqCategories = t.faqCategories || {
+    all: "All Questions",
+    general: "General",
+    pickup: "Pickups & Collection",
+    reward: "Rewards & Points",
+    account: "Account & Billing",
+    technical: "Technical Support"
+  };
+
+  // Filter FAQs based on search query
+  const filteredFaqs = faqs.filter(faq => {
+    const matchesSearch = searchQuery === "" || 
+      faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      faq.answer.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesCategory = activeCategory === "all" || faq.category === activeCategory;
+    
+    return matchesSearch && matchesCategory;
+  });
+
+  // Group FAQs by category
+  const categories = ["all", ...new Set(faqs.map(faq => faq.category))];
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{t.faq}</CardTitle>
-        <CardDescription>
-          Find answers to commonly asked questions about our services
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Tabs defaultValue="general" className="w-full">
-          <TabsList className="grid grid-cols-5 mb-4">
-            <TabsTrigger value="general">{t.faqCategories.general}</TabsTrigger>
-            <TabsTrigger value="recycling">{t.faqCategories.recycling}</TabsTrigger>
-            <TabsTrigger value="account">{t.faqCategories.account}</TabsTrigger>
-            <TabsTrigger value="rewards">{t.faqCategories.rewards}</TabsTrigger>
-            <TabsTrigger value="technical">{t.faqCategories.technical}</TabsTrigger>
-          </TabsList>
-          
-          {Object.entries(t.faqCategories).map(([category, label]) => (
-            <TabsContent key={category} value={category}>
-              <Accordion type="single" collapsible className="w-full">
-                {(filteredFaqs[category as keyof typeof faqs] || []).map((faq, index) => (
-                  <AccordionItem key={index} value={`item-${index}`}>
-                    <AccordionTrigger className="text-left">
-                      {faq.question}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground">
-                      {faq.answer}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-                {filteredFaqs[category as keyof typeof faqs]?.length === 0 && (
-                  <p className="text-center py-6 text-muted-foreground">
-                    No FAQs found matching your query.
-                  </p>
-                )}
-              </Accordion>
-            </TabsContent>
+      <Tabs defaultValue="all" onValueChange={setActiveCategory}>
+        <TabsList className="w-full overflow-x-auto flex-wrap justify-start p-1">
+          {categories.map((category) => (
+            <TabsTrigger key={category} value={category} className="text-sm">
+              {faqCategories[category] || category}
+            </TabsTrigger>
           ))}
-        </Tabs>
-      </CardContent>
+        </TabsList>
+
+        {categories.map((category) => (
+          <TabsContent key={category} value={category}>
+            <CardContent className="pt-6">
+              {filteredFaqs.length > 0 ? (
+                <Accordion type="single" collapsible className="w-full">
+                  {filteredFaqs.map((faq) => (
+                    <AccordionItem key={faq.id} value={faq.id}>
+                      <AccordionTrigger className="text-left">
+                        {faq.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground">
+                        {faq.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              ) : (
+                <div className="py-10 text-center">
+                  <p className="text-muted-foreground">No FAQs match your search.</p>
+                </div>
+              )}
+            </CardContent>
+          </TabsContent>
+        ))}
+      </Tabs>
     </Card>
   );
 };

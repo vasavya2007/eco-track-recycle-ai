@@ -9,6 +9,27 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      "E-waste-records": {
+        Row: {
+          created_at: string
+          id: number
+          item_type: string | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          item_type?: string | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          item_type?: string | null
+          status?: string | null
+        }
+        Relationships: []
+      }
       ewaste_items: {
         Row: {
           category: string
